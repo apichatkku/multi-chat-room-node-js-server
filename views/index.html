@@ -1,0 +1,49 @@
+<html>
+
+<head>
+    <title>หน้าเข้าสู่ระบบ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/chat.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/jquery/jquery.min.js"></script>
+    <script src="/js/client/theme.js"></script>
+</head>
+
+<body>
+    <form id="login-form" style="
+    display: flex;
+    border: 1px solid red;
+    height: 50%;flex-direction: column;
+    align-items: center;
+    justify-content: center;">
+        <div style="width: 80%;order: 0;text-align: center; font-size: 28px;">ลงชื่อเข้าใช้</div>
+        <input id="id-input" style="width: 80%;text-align: center;margin-top: 5px;padding: 10px; font-size: 18px;" type="text" placeholder="ใส่ชื่อที่นี่">
+        <input style="width: 80%;margin-top: 5px;padding: 10px;font-size: 18px;" type="submit" value="ตกลง">
+        <div id="wrong-txt" style="color: orangered"></div>
+    </form>
+
+    <script>
+        const SOCKET = io();
+        SOCKET.emit('connect', {});
+        $(function () {
+            $('#login-form').submit(function () {
+                var id = $("#id-input").val();
+                SOCKET.emit('login', { id: id });
+                return false;
+            });
+        });
+        SOCKET.on('login', (data) => {
+            if (data.status === true) {
+                window.sessionStorage.setItem("id", data.id);
+                window.sessionStorage.setItem("token", data.token);
+                window.location.href = "./chatroom";
+            } else {
+                $('#wrong-txt').html('เกิดข้อผิดพลาด');
+                $('#wrong-txt').show();
+            }
+        });
+    </script>
+</body>
+
+</html>

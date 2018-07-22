@@ -1,0 +1,37 @@
+<html>
+
+<head>
+    <title>แอปพลิเคชันเพื่อการเรียนรู้การเขียนโปรแกรม</title>
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <button id="toggle-theme">Switch Theme</button>
+        <span>This is "div" tag</div>
+    </div>
+
+    <script>
+        $(function () {
+            $('#toggle-theme').on('click', function () {
+                $.post(
+                    "/newuser",
+                    { name: "Ta Wan", position: "God" },
+                    function (data) {
+                        $("span").html(data);
+                    })
+                    .done(function () {
+                    })
+                    .fail(function () {
+                    })
+                    .always(function (data, status) {
+                        alert(status);
+                    });
+            });
+        });
+    </script>
+</body>
+
+</html>

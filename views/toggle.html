@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <title>แอปพลิเคชันเพื่อการเรียนรู้การเขียนโปรแกรม</title>
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <button id="toggle-theme">Switch Theme</button>
+        <div>This is "div" tag</div>
+        <p>This is "p" tag</div>
+    </div>
+
+    <script>
+        $(function () {
+            initialViewMode()
+
+            function initialViewMode() {
+                var viewMode = localStorage.getItem('viewMode');
+                if (viewMode === 'dark') {
+                    $('body, .post').addClass('is-dark-mode');
+                }
+            }
+
+            function toggleViewMode() {
+                var viewMode = localStorage.getItem('viewMode');
+                $('body, .post').toggleClass('is-dark-mode');
+                localStorage.setItem('viewMode', viewMode === 'dark' ? 'light' : 'dark');
+            }
+
+            $('#toggle-theme').on('click', function () {
+                toggleViewMode();
+            });
+        });
+    </script>
+</body>
+
+</html>

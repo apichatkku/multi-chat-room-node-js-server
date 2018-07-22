@@ -1,0 +1,83 @@
+<html>
+
+<head>
+    <title>ห้องแชท</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/chat.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/jquery/jquery.min.js"></script>
+    <script src="/js/client/theme.js"></script>
+</head>
+
+<body>
+    <div class="main-screen">
+        <div class="head-screen">
+            <button id="toggle-theme-btn">Switch Theme</button>
+            <div style="font-size: 36px;text-align: center;" id="showmsg-txt">Chat Room</div>
+            <p id="name-txt" style="font-size: 26px;text-decoration: underline">Name</p>
+        </div>
+        <div class="chat-box">
+            <div id="chat-box" class="chat-screen"></div>
+            <script>
+                $(function () {
+                    $('#chat-box').bind("DOMSubtreeModified", function () {
+                        var objDiv = document.getElementById("chat-box");
+                        objDiv.scrollTop = objDiv.scrollHeight;
+                    });
+
+                    $('#msg-input').keypress(function (e) {
+                        if (e.which == 13) {
+                            $("#send-btn").click();
+                        }
+                    });
+                });
+            </script>
+            <div class="chat-footer">
+                <input id="msg-input">
+                <button id="send-btn">ส่ง</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var SOCKET = io();
+
+        // authorization
+        $(() => {
+            SOCKET.emit('token', { token: sessionStorage.getItem("token") })
+        });
+        SOCKET.on('token', (data) => {
+            console.log(data);
+            if (data.status !== "success") {
+                window.location.href = "./";
+            } else {
+                sessionStorage.setItem("id", data.id)
+                tokenSuccess();
+            }
+        });
+
+        var ID, TOKEN;
+        function tokenSuccess() {
+            ID = sessionStorage.getItem("id");
+            TOKEN = sessionStorage.getItem("token");
+            document.title += " " + ID;
+            $('#name-txt').html(ID);
+        }
+
+        $(function () {
+            $('#send-btn').on('click', function () {
+                var msg = $('#msg-input').val();
+                $('#msg-input').val("");
+                SOCKET.emit('send', { token: TOKEN, msg: msg });
+            });
+        });
+        SOCKET.on('send-res', (data) => {
+            var id = data.id;
+            var msg = data.msg;
+            $('#chat-box').append('<div class="msg-box"><div class="name">' + id + '</div><div class="msg">' + msg + '</div></div>');
+        });
+    </script>
+</body>
+
+</html>
