@@ -13,6 +13,7 @@ var io = require('socket.io').listen(server);
 //import
 var TOOL = require("./public/js/server/sha1");
 var USER = require('./user');
+var ROOM = require('./room');
 var bodyParser = require('body-parser');
 
 // parse application/json
@@ -29,6 +30,10 @@ function getIndexPage(req, res) {
     res.sendFile(path.join(__dirname + '/views/index.html'));
 }
 
+function getMainPage(req, res) {
+    res.sendFile(path.join(__dirname + '/views/main.html'));
+}
+
 function getChatPage(req, res) {
     res.sendFile(path.join(__dirname + '/views/chatroom.html'));
 }
@@ -43,32 +48,12 @@ function getTogglePage(req, res) {
 
 app.get('/', getIndexPage);
 app.get('/send', getSendPage);
+app.get('/main', getMainPage);
 app.get('/chatroom', getChatPage);
 app.get('/toggle', getTogglePage);
 
 //------------------------------------------------------------------------------------------------------------------
-
-// authorization
-/*io.use(function (socket, next) {
-    console.log("Query: ", socket.handshake.query);
-    console.log("Query: ", socket.id);
-    let token = socket.handshake.query.token;
-    // return the result of next() to accept the connection.
-    if (typeof token === "undefined" || token === null) {
-        socket.emit('token', { status: "error" });
-        return next();
-    } else if (USER.checkToken(token, socket.id) !== null) {
-        socket.emit('token', { status: "success" });
-        return next();
-    } else {
-        console.log(3);
-        setTimeout(() => {
-            socket.emit('token', { status: "error" });
-        }, 1000);
-    }
-    // call next() with an Error if you need to reject the connection.
-    next(new Error('Authentication error'));
-});*/
+//Variable
 
 io.on('connection', function (socket) {
     console.log(socket.id + " is connected.");

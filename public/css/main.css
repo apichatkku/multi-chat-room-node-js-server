@@ -13,17 +13,18 @@ body.is-dark-mode {
 }
 
 button {
-  background: red;
-  color: white;
-  border: 2px solid #222;
-  padding: 5px;
+  background: rgb(28, 104, 175);
+  font-weight: bolder;
+  color: black;
+  border: none;
+  padding: 8px;
   float: right;
 }
 
 .is-dark-mode button {
-  border: 2px solid #fff;
+  color: white;
 }
 
 .is-dark-mode p {
-  color: rgb(32, 124, 211);
+  color: rgb(28, 104, 175);
 }

@@ -1,4 +1,5 @@
 var TOOL = require("./public/js/server/sha1");
+var ROOM = require("./room");
 var userDatas = [];
 
 var User = function (id, socket) {
@@ -8,6 +9,9 @@ var User = function (id, socket) {
     this.time = new Date().getTime() + 30 * 60 * 1000;
     this.retime = function () {
         this.time = new Date().getTime() + 30 * 60 * 1000;
+    }
+    this.findSocket = function (socket) {
+        return this.sockets.indexOf(socket);
     }
 }
 
@@ -28,12 +32,27 @@ exports.checkToken = function (token, socket) {
         return null;
     }
 }
+
+exports.findBySocket = function (socket) {
+    try {
+        for (let i = 0; i < userDatas.length; i++) {
+            if (userDatas[i].findSocket(socket) >= 0) {
+                return { token: userDatas[i].token, id: userDatas[i].id, sockets: userDatas[i].sockets };
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+    return null;
+}
+
 exports.newUser = function (id, socket) {
     let user = new User(id, socket);
     userDatas.push(user);
     console.log(userDatas);
     return { token: user.token, id: user.id, sockets: user.sockets };
 }
+
 exports.disSocket = function (socket) {
     for (let i = 0; i < userDatas.length; i++) {
         let index = userDatas[i].sockets.indexOf(socket);
@@ -47,6 +66,7 @@ var intervalUser = setInterval(function () {
     console.log("timer check timeout.");
     checkTimeout();
 }, 10000);
+
 checkTimeout = function () {
     for (let i = 0; i < userDatas.length; i++) {
         if (userDatas[i].sockets.length <= 0) {

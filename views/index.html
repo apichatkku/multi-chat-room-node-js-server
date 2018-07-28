@@ -37,7 +37,7 @@
             if (data.status === true) {
                 window.sessionStorage.setItem("id", data.id);
                 window.sessionStorage.setItem("token", data.token);
-                window.location.href = "./chatroom";
+                window.location.href = "./main";
             } else {
                 $('#wrong-txt').html('เกิดข้อผิดพลาด');
                 $('#wrong-txt').show();

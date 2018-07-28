@@ -29,6 +29,7 @@
 .chat-screen .msg-box .name {
     float: left;
     clear: left;
+    margin-left: 8px;
 }
 
 .chat-box .msg-box .msg {
@@ -70,10 +71,6 @@
     background: rgb(28, 104, 175);
 }
 
-.chat-footer button::selection {
-    border: 0px;
-}
-
 .is-dark-mode .chat-box {
     border-color: black;
 }
@@ -86,6 +83,7 @@
     color: white;
     background: teal;
 }
+
 
 @media only screen and (max-width: 768px) {
     .main-screen {
