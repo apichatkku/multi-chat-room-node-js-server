@@ -8,34 +8,115 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/jquery/jquery.min.js"></script>
     <script src="/js/client/theme.js"></script>
+    <script src="/js/client/chat.js"></script>
+    <style>
+        .main-screen {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-screen {
+            box-sizing: border-box;
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .head-bar {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 80px;
+        }
+
+        .head-bar span {
+            float: left;
+            border: 0px solid #bbb;
+            display: block;
+            text-align: center;
+            line-height: 80px;
+            font-weight: bolder;
+            padding: 0 10px;
+        }
+
+        .head-bar .title {
+            float: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: bolder;
+        }
+
+        .head-bar button {
+            float: right;
+            text-align: center;
+        }
+
+        button:hover {
+            box-shadow: inset 0 0 20px;
+            text-shadow: 0px 0px 20px;
+        }
+
+        .right-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid darkgray;
+        }
+
+        #room-list-box {
+            border-right: 1px solid darkgray;
+        }
+
+        .is-dark-mode .right-box,
+        .is-dark-mode #room-list-box {
+            border-color: black;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="main-screen" >
+    <div class="main-screen">
         <div class="head-screen">
-            <button id="toggle-theme-btn">Switch Theme</button>
-            <div style="font-size: 36px;text-align: center;" id="showmsg-txt">Chat Room</div>
-            <p id="name-txt" style="font-size: 26px;text-decoration: underline">Name</p>
+            <div class="head-bar">
+                <span class="title">
+                    Main Room
+                </span>
+                <span id="name-txt">
+                    Name
+                </span>
+                <button id="toggle-theme-btn">Switch Theme</button>
+            </div>
         </div>
-        <div class="chat-box">
-            <div id="chat-box" class="chat-screen"></div>
-            <script>
-                $(function () {
-                    $('#chat-box').bind("DOMSubtreeModified", function () {
-                        var objDiv = document.getElementById("chat-box");
-                        objDiv.scrollTop = objDiv.scrollHeight;
-                    });
-
-                    $('#msg-input').keypress(function (e) {
-                        if (e.which == 13) {
-                            $("#send-btn").click();
-                        }
-                    });
-                });
-            </script>
-            <div class="chat-footer">
-                <input id="msg-input">
-                <button id="send-btn">ส่ง</button>
+        <div class="content-screen">
+            <div style="flex:2;position: relative;">
+                <div class="chat-box">
+                    <div id="chat-screen" class="chat-screen"></div>
+                    <div class="chat-footer">
+                        <input id="msg-input">
+                        <button id="send-btn">ส่ง</button>
+                    </div>
+                </div>
+            </div>
+            <div class="right-box">
+                <div style="flex: 1;display: flex; flex-direction: row">
+                    <div id="room-list-box" style="flex: 1;">
+                        roomlist
+                    </div>
+                    <div id="member-list-box" style="flex: 1;">
+                        memberlist
+                    </div>
+                </div>
+                <div style="display: flex; height: 40px;">
+                    <button style="flex: 1">สร้างห้อง</button>
+                    <button style="flex: 1">เข้าร่วมห้อง</button>
+                </div>
             </div>
         </div>
     </div>
@@ -75,7 +156,7 @@
         SOCKET.on('send-res', (data) => {
             var id = data.id;
             var msg = data.msg;
-            $('#chat-box').append('<div class="msg-box"><div class="name">' + id + '</div><div class="msg">' + msg + '</div></div>');
+            chatBoxAddMsg("chat-screen", id, msg);
         });
     </script>
 </body>
