@@ -67,6 +67,7 @@ io.on('connection', function (socket) {
             let user = USER.newUser(id, socket.id);
             console.log(user.id + "is logged in.");
             socket.emit("login", { id: user.id, token: user.token, status: true });
+            announceUserList(io);
         } catch (error) {
             console.log(error);
             socket.emit("login", { status: false });
@@ -85,6 +86,7 @@ io.on('connection', function (socket) {
             } else {
                 socket.emit('token', { status: "fail" });
             }
+            announceUserList(io);
         } catch (error) {
             socket.emit('token', { status: "error" });
             console.log(error);
@@ -107,9 +109,9 @@ io.on('connection', function (socket) {
             console.log(error);
         }
     });
-    socket.on('user-lsit', (data) =>{
+    socket.on('user-lsit', (data) => {
         try {
-            
+
         } catch (error) {
             console.log(error);
         }
@@ -117,8 +119,21 @@ io.on('connection', function (socket) {
     socket.on('disconnect', (data) => {
         try {
             USER.disSocket(socket.id);
+            announceUserList(io);
         } catch (error) {
             console.log(error);
         }
     });
+
 });
+
+function announceUserList(io) {
+    io.emit("user list", { users: USER.getUserIdList() });
+}
+
+
+/*-------------------------------------------------------------- */
+var intervalUser = setInterval(function () {
+    console.log("timer check timeout.");
+    USER.checkTimeout();
+}, 10000);

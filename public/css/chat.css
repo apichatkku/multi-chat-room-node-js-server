@@ -67,15 +67,15 @@
 
     font-weight: bolder;
     font-size: 20px;
-    background: rgb(28, 104, 175);
+    background: royalblue;
 }
 
 .is-dark-mode .chat-box {
-    border-color: black;
+    border-color: #1e1e1e;
 }
 
 .is-dark-mode .chat-screen {
-    background: #333;
+    background: #292929;
 }
 
 .is-dark-mode .msg-box .msg {
@@ -88,7 +88,7 @@
 
 .is-dark-mode .chat-box input{
     color: white;
-    background: #222;
+    background: #1e1e1e;
     border-color: gray;
 }
 

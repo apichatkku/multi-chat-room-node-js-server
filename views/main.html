@@ -3,12 +3,12 @@
 <head>
     <title>หน้าหลัก</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" type="text/css" href="css/chat.css">
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/jquery/jquery.min.js"></script>
-    <script src="/js/client/theme.js"></script>
-    <script src="/js/client/chat.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/main.css">
+    <link rel="stylesheet" type="text/css" href="./css/chat.css">
+    <script src="./socket.io/socket.io.js"></script>
+    <script src="./jquery/jquery.min.js"></script>
+    <script src="./js/client/theme.js"></script>
+    <script src="./js/client/chat.js"></script>
     <style>
         .main-screen {
             width: 100%;
@@ -53,30 +53,89 @@
             font-weight: bolder;
         }
 
+        #name-txt {
+            font-size: 26px;
+        }
+
         .head-bar button {
             float: right;
             text-align: center;
         }
 
-        button:hover {
-            box-shadow: inset 0 0 20px;
-            text-shadow: 0px 0px 20px;
+        /*option*/
+
+        .option-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            padding-left: 5px;
+            overflow: hidden;
         }
 
-        .right-box {
+        .room-list-frame,
+        .member-list-frame {
             flex: 1;
             display: flex;
             flex-direction: column;
-            border: 1px solid darkgray;
+            overflow-x: hidden;
+            padding: 0px 5px;
         }
 
-        #room-list-box {
-            border-right: 1px solid darkgray;
+        #room-list-box,
+        #member-list-box {
+            flex: 1;
+            word-wrap: break-word;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            background: #e0e0e0;
+            padding: 5px;
+            margin: 5px 0px;
         }
 
-        .is-dark-mode .right-box,
-        .is-dark-mode #room-list-box {
-            border-color: black;
+        .option-screen button {
+            height: 40px;
+        }
+
+        .option-screen .head-tag {
+            background: #c0c0c0;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .option-screen .item {
+            border-radius: 8px;
+            margin-bottom: 2px;
+            padding: 5px;
+            background: red;
+        }
+
+        .option-screen .member-list-frame .item {
+            display: flex;
+        }
+
+        .option-screen .item .room-id {
+            font-size: 12px;
+        }
+
+        .option-screen .item img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .option-screen .item .user-id {
+            flex: 1;
+            word-wrap: break-word;
+            overflow: hidden;
+            word-wrap: break-word
+        }
+
+        .is-dark-mode .option-screen .head-tag {
+            background: #3a3a3a;
+        }
+
+        .is-dark-mode #room-list-box,
+        .is-dark-mode #member-list-box {
+            background: #292929;
         }
     </style>
 </head>
@@ -104,18 +163,60 @@
                     </div>
                 </div>
             </div>
-            <div class="right-box">
-                <div style="flex: 1;display: flex; flex-direction: row">
-                    <div id="room-list-box" style="flex: 1;">
-                        roomlist
+            <div class="option-screen">
+                <div class="room-list-frame">
+                    <div class="head-tag">ห้อง</div>
+                    <div id="room-list-box">
+                        <div class="item">
+                            <div id="num-of-mem" style="float: right;background: blue">5/5</div>
+                            <img style="float: right;width: 20px" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">
+                            <div class="room-name">
+                                Nameaaaaaaaaaaaaaaaaaaaaa
+                            </div>
+                            <div class="room-id">
+                                #123456
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div id="num-of-mem" style="float: right;background: blue">5/5</div>
+                            <img id="num-of-mem" style="float: right;width: 20px" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">
+                            <div id="head-item">
+                                Nameaaaaaaaaaaaaaaaaaaaaa
+                            </div>
+                            <div id="id-item">
+                                #123456
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div id="num-of-mem" style="float: right;background: blue">5/5</div>
+                            <img id="num-of-mem" style="float: right;width: 20px" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">
+                            <div id="head-item">
+                                Nameaaaaa
+                            </div>
+                            <div id="id-item">
+                                #123456
+                            </div>
+                        </div>
                     </div>
-                    <div id="member-list-box" style="flex: 1;">
-                        memberlist
-                    </div>
+                    <button>สร้างห้อง</button>
                 </div>
-                <div style="display: flex; height: 40px;">
-                    <button style="flex: 1">สร้างห้อง</button>
-                    <button style="flex: 1">เข้าร่วมห้อง</button>
+                <div class="member-list-frame">
+                    <div class="head-tag">ผู้ใช้งาน</div>
+                    <div id="member-list-box">
+                        <div class="item">
+                            <img src="./images/man-ico.png">
+                            <div class="user-id">
+                                asdfasdfasdfasdfasdfasdfasdfasdfasdfsadfaaaaasdfasdf
+                            </div>
+                        </div>
+                        <div class="item">
+                            <img src="./images/man-ico.png">
+                            <div class="user-id">
+                                asdfasdfasdfasdfasdfasdfasdfasdfasdfsadfaaaaasdfasdf
+                            </div>
+                        </div>
+                    </div>
+                    <button>เข้าร่วมห้อง</button>
                 </div>
             </div>
         </div>
@@ -153,10 +254,27 @@
                 SOCKET.emit('send', { token: TOKEN, msg: msg });
             });
         });
+
+        // SOCKET RECEIV************************
         SOCKET.on('send-res', (data) => {
             var id = data.id;
             var msg = data.msg;
             chatBoxAddMsg("chat-screen", id, msg);
+        });
+        SOCKET.on('user list', (data) => {
+            let userList = data.users;
+            $("#member-list-box").html("");
+            for (let i = 0; i < userList.length; i++) {
+                $("#member-list-box").append(
+                    "<di class='item'>" +
+                    "<img src='./images/man-ico.png'>" +
+                    "<div class='user-id'>" + userList[i] + "</div>" +
+                    "</div>"
+                );
+                console.log(555);
+                console.log($("#member-list-box").text());
+            }
+            console.log(data.users);
         });
     </script>
 </body>

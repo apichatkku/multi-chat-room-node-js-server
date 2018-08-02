@@ -62,12 +62,21 @@ exports.disSocket = function (socket) {
     }
 }
 
-var intervalUser = setInterval(function () {
-    console.log("timer check timeout.");
-    checkTimeout();
-}, 10000);
+exports.getUserIdList = function () {
+    let userIdList = [];
+    for (let i = 0; i < userDatas.length; i++) {
+        if (userDatas[i].sockets.length === 0) {
+            continue;
+        }
+        let userId = userDatas[i].id;
+        if (userIdList.indexOf(userId) === -1) {
+            userIdList.push(userId);
+        }
+    }
+    return userIdList;
+}
 
-checkTimeout = function () {
+exports.checkTimeout = function () {
     for (let i = 0; i < userDatas.length; i++) {
         if (userDatas[i].sockets.length <= 0) {
             if (userDatas[i].time <= new Date().getTime()) {
