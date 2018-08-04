@@ -27,6 +27,12 @@
         const SOCKET = io();
         SOCKET.emit('connect', {});
         $(function () {
+            if (sessionStorage.getItem("token") !== null) {
+                SOCKET.emit("logout", { token: sessionStorage.getItem("token") });
+                sessionStorage.removeItem("id");
+                sessionStorage.removeItem("token");
+                alert("logout");
+            }
             $('#login-form').submit(function () {
                 var id = $("#id-input").val();
                 SOCKET.emit('login', { id: id });
@@ -35,8 +41,8 @@
         });
         SOCKET.on('login', (data) => {
             if (data.status === true) {
-                window.sessionStorage.setItem("id", data.id);
-                window.sessionStorage.setItem("token", data.token);
+                sessionStorage.setItem("id", data.id);
+                sessionStorage.setItem("token", data.token);
                 window.location.href = "./main";
             } else {
                 $('#wrong-txt').html('เกิดข้อผิดพลาด');

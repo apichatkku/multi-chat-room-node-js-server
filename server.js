@@ -67,7 +67,7 @@ io.on('connection', function (socket) {
             let user = USER.newUser(id, socket.id);
             console.log(user.id + "is logged in.");
             socket.emit("login", { id: user.id, token: user.token, status: true });
-            announceUserList(io);
+            announceUserList();
         } catch (error) {
             console.log(error);
             socket.emit("login", { status: false });
@@ -83,10 +83,11 @@ io.on('connection', function (socket) {
             let user = USER.checkToken(token, socket.id);
             if (user !== null) {
                 socket.emit('token', { status: "success", id: user.id });
+                socket.emit('room list', { rooms: ROOM.getRoomList() });
             } else {
                 socket.emit('token', { status: "fail" });
             }
-            announceUserList(io);
+            announceUserList();
         } catch (error) {
             socket.emit('token', { status: "error" });
             console.log(error);
@@ -109,17 +110,56 @@ io.on('connection', function (socket) {
             console.log(error);
         }
     });
-    socket.on('user-lsit', (data) => {
+    socket.on('user list', (data) => {
         try {
-
+            io.emit("user list", { users: USER.getUserIdList() });
         } catch (error) {
             console.log(error);
         }
     });
+    socket.on('create room', (data) => {
+        try {
+            let roomName = data.roomName;
+            console.log(roomName);
+            if (roomName === "" || typeof roomName != "string") {
+                return;
+            }
+            let password = data.password;
+            console.log(password);
+            let token = data.token;
+            let user = USER.checkToken(token, socket.id);
+            console.log(user);
+            if (user === null) {
+                return;
+            }
+            let roomId = ROOM.createRoom(roomName, user.id, password);
+            console.log(roomId);
+            announceRoomList();
+            socket.emit("create room", { roomId: roomId });
+        } catch (error) {
+            console.log(error);
+            socket.emit("create room", { roomId: -1 });
+        }
+    });
+
+    socket.on('logout', (data) => {
+        try {
+            if (typeof data.token === "undefined") {
+                return;
+            }
+            USER.removeToken(data.token);
+            announceRoomList();
+            announceUserList();
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
     socket.on('disconnect', (data) => {
         try {
             USER.disSocket(socket.id);
-            announceUserList(io);
+            announceUserList();
+            announceRoomList();
         } catch (error) {
             console.log(error);
         }
@@ -127,7 +167,11 @@ io.on('connection', function (socket) {
 
 });
 
-function announceUserList(io) {
+function announceRoomList() {
+    io.emit("room list", { rooms: ROOM.getRoomList() });
+}
+
+function announceUserList() {
     io.emit("user list", { users: USER.getUserIdList() });
 }
 
@@ -136,4 +180,5 @@ function announceUserList(io) {
 var intervalUser = setInterval(function () {
     console.log("timer check timeout.");
     USER.checkTimeout();
-}, 10000);
+    announceRoomList();
+}, 5000);

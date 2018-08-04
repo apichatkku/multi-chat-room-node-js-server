@@ -1,6 +1,7 @@
 body {
   background: #fff;
   color: #222;
+  margin: 0px;
 }
 
 button:focus {
@@ -17,12 +18,12 @@ body.is-dark-mode {
 }
 
 button {
-  background: royalblue;
+  background: steelblue;
+  border-radius: 2px;
   font-weight: bolder;
   color: black;
   border: none;
   padding: 8px;
-  float: right;
 }
 
 button:hover {

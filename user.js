@@ -53,15 +53,6 @@ exports.newUser = function (id, socket) {
     return { token: user.token, id: user.id, sockets: user.sockets };
 }
 
-exports.disSocket = function (socket) {
-    for (let i = 0; i < userDatas.length; i++) {
-        let index = userDatas[i].sockets.indexOf(socket);
-        if (index >= 0) {
-            userDatas[i].sockets.splice(index, 1);
-        }
-    }
-}
-
 exports.getUserIdList = function () {
     let userIdList = [];
     for (let i = 0; i < userDatas.length; i++) {
@@ -69,6 +60,7 @@ exports.getUserIdList = function () {
             continue;
         }
         let userId = userDatas[i].id;
+        //check userDatas dont have another token
         if (userIdList.indexOf(userId) === -1) {
             userIdList.push(userId);
         }
@@ -76,16 +68,59 @@ exports.getUserIdList = function () {
     return userIdList;
 }
 
-exports.checkTimeout = function () {
+function getSocketsById(id) {
+    let sockets = [];
     for (let i = 0; i < userDatas.length; i++) {
-        if (userDatas[i].sockets.length <= 0) {
-            if (userDatas[i].time <= new Date().getTime()) {
-                userDatas.splice(i, 1);
-                i--;
-            }
-        } else {
-            userDatas[i].retime();
+        if (userDatas[i].id === id) {
+            sockets = sockets.concat(userDatas[i].sockets);
         }
     }
-    console.log(userDatas);
+    return sockets;
+}
+
+function clearUserActivity(id) {
+    console.log("444444444444444" + getSocketsById(id).length);
+    if (getSocketsById(id).length <= 0) {
+        ROOM.memberOut(id);
+    }
+}
+
+exports.removeToken = function (token) {
+    let index = userDatas.findIndex(x => x.token === token);
+    if (index >= 0) {
+        let id = userDatas[index].id;
+        userDatas.splice(index, 1);
+        clearUserActivity(id);
+    }
+}
+
+exports.disSocket = function (socket) {
+    for (let i = 0; i < userDatas.length; i++) {
+        let index = userDatas[i].sockets.indexOf(socket);
+        if (index >= 0) {
+            let id = userDatas[i].id;
+            userDatas[i].sockets.splice(index, 1);
+            if (userDatas[i].sockets.length <= 0) {
+                clearUserActivity(id);
+            }
+        }
+    }
+}
+
+exports.checkTimeout = function () {
+    try {
+        for (let i = 0; i < userDatas.length; i++) {
+            if (userDatas[i].sockets.length <= 0) {
+                let id = userDatas[i].id;
+                if (userDatas[i].time <= new Date().getTime()) {
+                    userDatas.splice(i, 1);
+                    i--;
+                }
+                clearUserActivity(id);
+            }
+        }
+        console.log(userDatas);
+    } catch (error) {
+        console.log(error);
+    }
 }

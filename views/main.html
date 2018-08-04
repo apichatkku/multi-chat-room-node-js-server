@@ -31,6 +31,7 @@
             padding: 0;
             overflow: hidden;
             height: 80px;
+            box-shadow: inset 0px -10px 10px -10px;
         }
 
         .head-bar span {
@@ -49,7 +50,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 36px;
+            font-size: 2em;
             font-weight: bolder;
         }
 
@@ -65,7 +66,7 @@
         /*option*/
 
         .option-screen {
-            flex: 1;
+            flex: 2;
             display: flex;
             flex-direction: row;
             padding-left: 5px;
@@ -106,11 +107,23 @@
             border-radius: 8px;
             margin-bottom: 2px;
             padding: 5px;
-            background: red;
+            line-height: 20px;
+            background: cadetblue;
         }
 
         .option-screen .member-list-frame .item {
             display: flex;
+        }
+
+        .option-screen .item .item-name {
+            font-weight: bolder;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .room-list-frame .room-id::before {
+            content: "#";
         }
 
         .option-screen .item .room-id {
@@ -120,6 +133,12 @@
         .option-screen .item img {
             width: 20px;
             height: 20px;
+            margin: 0px 0px;
+        }
+
+        .room-list-frame img,
+        .room-list-frame span {
+            float: right;
         }
 
         .option-screen .item .user-id {
@@ -129,6 +148,10 @@
             word-wrap: break-word
         }
 
+        .is-dark-mode .option-screen .item {
+            background: teal;
+        }
+
         .is-dark-mode .option-screen .head-tag {
             background: #3a3a3a;
         }
@@ -136,6 +159,70 @@
         .is-dark-mode #room-list-box,
         .is-dark-mode #member-list-box {
             background: #292929;
+        }
+
+        #modal-create-room {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .content-create-room {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: cadetblue;
+            padding: 20px 20px;
+            border-radius: 8px;
+        }
+
+        .content-create-room input {
+            display: block;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+        }
+
+        .content-create-room button {
+            display: block;
+            margin-top: 10px;
+            margin-left: 50%;
+            text-align: center;
+            transform: translate(-50%, 0);
+        }
+
+        .is-dark-mode #modal-create-room {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .is-dark-mode .content-create-room {
+            background: darkslategrey;
+        }
+
+        .is-dark-mode .content-create-room input {
+            background: #111;
+            color: white;
+        }
+
+        @media only screen and (max-width: 767px) {
+            .head-bar .title {
+                font-size: 18px;
+                ;
+            }
+            .head-bar #name-txt {
+                font-size: 10px;
+            }
+            button {
+                font-size: 14px;
+            }
+            .option-screen {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -158,7 +245,7 @@
                 <div class="chat-box">
                     <div id="chat-screen" class="chat-screen"></div>
                     <div class="chat-footer">
-                        <input id="msg-input">
+                        <input id="msg-input" placeholder="ข้อความ">
                         <button id="send-btn">ส่ง</button>
                     </div>
                 </div>
@@ -168,57 +255,33 @@
                     <div class="head-tag">ห้อง</div>
                     <div id="room-list-box">
                         <div class="item">
-                            <div id="num-of-mem" style="float: right;background: blue">5/5</div>
-                            <img style="float: right;width: 20px" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">
-                            <div class="room-name">
-                                Nameaaaaaaaaaaaaaaaaaaaaa
+                            <span>6</span>
+                            <img src="./images/man-ico.png">
+                            <img id="num-of-mem" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">
+                            <div class="item-name">
+                                รอออออออออออแฟนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนน
                             </div>
-                            <div class="room-id">
-                                #123456
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div id="num-of-mem" style="float: right;background: blue">5/5</div>
-                            <img id="num-of-mem" style="float: right;width: 20px" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">
-                            <div id="head-item">
-                                Nameaaaaaaaaaaaaaaaaaaaaa
-                            </div>
-                            <div id="id-item">
-                                #123456
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div id="num-of-mem" style="float: right;background: blue">5/5</div>
-                            <img id="num-of-mem" style="float: right;width: 20px" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">
-                            <div id="head-item">
-                                Nameaaaaa
-                            </div>
-                            <div id="id-item">
-                                #123456
-                            </div>
+                            <div class="room-id">7</div>
                         </div>
                     </div>
-                    <button>สร้างห้อง</button>
+                    <button id="create-room-btn">สร้างห้อง</button>
                 </div>
                 <div class="member-list-frame">
                     <div class="head-tag">ผู้ใช้งาน</div>
                     <div id="member-list-box">
-                        <div class="item">
-                            <img src="./images/man-ico.png">
-                            <div class="user-id">
-                                asdfasdfasdfasdfasdfasdfasdfasdfasdfsadfaaaaasdfasdf
-                            </div>
-                        </div>
-                        <div class="item">
-                            <img src="./images/man-ico.png">
-                            <div class="user-id">
-                                asdfasdfasdfasdfasdfasdfasdfasdfasdfsadfaaaaasdfasdf
-                            </div>
-                        </div>
                     </div>
                     <button>เข้าร่วมห้อง</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="modal-create-room" hidden>
+        <div class="content-create-room">
+            ชื่อห้อง
+            <input type="text" id="room-name-input" placeholder="ชื่อห้อง"> รหัสผ่าน
+            <input type="text" id="room-password-input" placeholder="รหัสผ่าน">
+            <button id="create-room-submit">ตกลง</button>
         </div>
     </div>
 
@@ -232,7 +295,7 @@
         SOCKET.on('token', (data) => {
             console.log(data);
             if (data.status !== "success") {
-                window.location.href = "./";
+                window.location.replace("./");
             } else {
                 sessionStorage.setItem("id", data.id)
                 tokenSuccess();
@@ -252,6 +315,19 @@
                 var msg = $('#msg-input').val();
                 $('#msg-input').val("");
                 SOCKET.emit('send', { token: TOKEN, msg: msg });
+            });
+            $('#create-room-btn').on('click', function () {
+                $('#modal-create-room').show();
+            });
+            $('#modal-create-room').on('click', function (event) {
+                if (event.target.id === "modal-create-room") {
+                    $('#modal-create-room').hide();
+                }
+            });
+            $('#create-room-submit').on('click', function () {
+                let roomName = $('#room-name-input').val();
+                let passwod = $('#room-name-password').val();
+                SOCKET.emit('create room', { token: TOKEN, roomName: roomName, passwod: passwod });
             });
         });
 
@@ -275,6 +351,31 @@
                 console.log($("#member-list-box").text());
             }
             console.log(data.users);
+        });
+        SOCKET.on('create room', (data) => {
+            let roomId = data.roomId;
+            if (roomId != -1) {
+                alert("สร้างห้องสำเร็จ");
+            } else {
+                alert("สร้างห้องไม่สำเร็จ");
+            }
+        });
+        SOCKET.on('room list', (data) => {
+            let roomList = data.rooms;
+            $("#room-list-box").html("");
+            for (let i = 0; i < roomList.length; i++) {
+                $("#room-list-box").append(
+                    '<div class="item">' +
+                    '<span>' + roomList[i].members.length + '</span>' +
+                    '<img src="./images/man-ico.png">' +
+                    '<img id="num-of-mem" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">' +
+                    '<div class="item-name">' +
+                    roomList[i].name +
+                    '</div>' +
+                    '<div class="room-id">' + roomList[i].id + '</div>' +
+                    '</div>'
+                );
+            }
         });
     </script>
 </body>
