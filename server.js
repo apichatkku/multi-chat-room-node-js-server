@@ -147,7 +147,6 @@ io.on('connection', function (socket) {
             let user = USER.checkToken(token, socket.id);
             let roomId = Number(data.roomId);
             let password = (typeof data.password !== "string") ? "" : data.password;
-            console.log("-------------------------------\n" + (typeof roomId), (typeof password));
             let newRoomId = ROOM.memberJoin(roomId, user.id, password);
             socket.emit('join room', { roomId: newRoomId });
         } catch (error) {
@@ -157,7 +156,41 @@ io.on('connection', function (socket) {
             announceRoomList();
         }
     });
-
+    socket.on('check room', (data) => {
+        try {
+            let user = USER.checkToken(data.token, socket.id);
+            let roomId = ROOM.findByMember(user.id);
+            socket.emit('check room', { roomId: roomId });
+            announceRoomList();
+        } catch (error) {
+            console.log(error);
+        }
+    })
+    socket.on('send in room', (data) => {
+        try {
+            let user = USER.checkToken(data.token, socket.id);
+            let roomId = Number(data.roomId);
+            let msg = data.msg;
+            if (typeof msg !== "string" || msg === "") {
+                return;
+            }
+            if (ROOM.findById(roomId).indexMemeber(user.id) === -1) {
+                return;
+            }
+            sendInRoom(roomId, "send in room", { userId: user.id, roomId: roomId, msg: msg });
+        } catch (error) {
+            console.log(error);
+        }
+    });
+    socket.on('exit room', (data) => {
+        try {
+            let user = USER.checkToken(data.token, socket.id);
+            ROOM.memberOut(user.id);
+            socket.emit('exit room', {});
+        } catch (error) {
+            console.log(error);
+        }
+    });
     socket.on('logout', (data) => {
         try {
             if (typeof data.token === "undefined") {
@@ -170,7 +203,6 @@ io.on('connection', function (socket) {
             console.log(error);
         }
     });
-
     socket.on('disconnect', (data) => {
         try {
             USER.disSocket(socket.id);
@@ -183,6 +215,18 @@ io.on('connection', function (socket) {
 
 });
 
+function sendInRoom(roomId, title, data) {
+    let room = ROOM.findById(roomId);
+    console.log("####################" + room.members.length);
+    room.members.forEach((member) => {
+        let sockets = USER.getSocketsById(member.id);
+        sockets.forEach((socketId) => {
+            console.log(socketId);
+            io.to(socketId).emit(title, data);
+        });
+    });
+}
+
 function announceRoomList() {
     io.emit("room list", { rooms: ROOM.getRoomList() });
 }
@@ -194,7 +238,8 @@ function announceUserList() {
 
 /*-------------------------------------------------------------- */
 var intervalUser = setInterval(function () {
-    console.log("timer check timeout.");
+    console.log("ntimer check timeout.");
     USER.checkTimeout();
     announceRoomList();
+    console.log("---------------------");
 }, 5000);

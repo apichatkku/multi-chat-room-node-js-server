@@ -77,9 +77,9 @@ function getSocketsById(id) {
     }
     return sockets;
 }
+exports.getSocketsById = getSocketsById;
 
 function clearUserActivity(id) {
-    console.log("444444444444444" + getSocketsById(id).length);
     if (getSocketsById(id).length <= 0) {
         ROOM.memberOut(id);
     }
@@ -102,7 +102,9 @@ exports.disSocket = function (socket) {
             let id = userDatas[i].id;
             userDatas[i].sockets.splice(index, 1);
             if (userDatas[i].sockets.length <= 0) {
-                clearUserActivity(id);
+                setTimeout(() => {
+                    clearUserActivity(id);
+                }, 2000);
             }
         }
     }
@@ -116,8 +118,8 @@ exports.checkTimeout = function () {
                 if (userDatas[i].time <= new Date().getTime()) {
                     userDatas.splice(i, 1);
                     i--;
+                    clearUserActivity(id);
                 }
-                clearUserActivity(id);
             }
         }
         console.log(userDatas);

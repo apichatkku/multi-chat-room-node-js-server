@@ -44,6 +44,10 @@ var Room = function (name, id, userId, password) {
     this.getMemberList = function () {
         return this.members;
     }
+    this.indexMemeber = function (userId) {
+        let index = this.members.findIndex(x => x.id === userId);
+        return index;
+    }
 }
 
 exports.createRoom = function (name, userId, password) {
@@ -95,27 +99,22 @@ exports.getRoomList = function () {
 exports.memberJoin = function (roomId, userId, password) {
     let index = roomDatas.findIndex(x => x.id === roomId);
     //check roomDatas don't have this room id
-    console.log("------------"+index);
+    console.log("------------" + index);
     if (index < 0) {
         return -1;
     }
     //check user id don't have in room of this id
     if (roomDatas[index].members.findIndex(x => x.id === userId) === -1) {
-        console.log("555555555555-"+password);
         if (typeof password !== "string") {
             password = "";
         }
-        console.log("666666666666-"+password);
         if (roomDatas[index].password === password) {
             memberOut(userId);
             roomDatas[index].join(userId);
-            console.log("7777777777777-"+password);
-        }else{
-            console.log("0000000000000-"+password);
+        } else {
             return -1;
         }
     }
-    console.log("8888888888888-"+password);
     return roomDatas[index].id;
 }
 

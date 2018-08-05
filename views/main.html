@@ -9,293 +9,19 @@
     <script src="./jquery/jquery.min.js"></script>
     <script src="./js/client/theme.js"></script>
     <script src="./js/client/chat.js"></script>
-    <style>
-        .main-screen {
-            width: 100%;
-            height: 100%;
-
-            display: flex;
-            flex-direction: column;
-        }
-
-        .content-screen {
-            box-sizing: border-box;
-            flex: 1;
-            display: flex;
-            flex-direction: row;
-        }
-
-        .head-bar {
-            position: relative;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            height: 80px;
-            box-shadow: inset 0px -10px 10px -10px;
-        }
-
-        .head-bar span {
-            float: left;
-            border: 0px solid #bbb;
-            display: block;
-            text-align: center;
-            line-height: 80px;
-            font-weight: bolder;
-            padding: 0 10px;
-        }
-
-        .head-bar .title {
-            float: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2em;
-            font-weight: bolder;
-        }
-
-        #name-txt {
-            font-size: 26px;
-        }
-
-        .head-bar button {
-            float: right;
-            text-align: center;
-        }
-
-        /*option*/
-
-        .option-screen {
-            flex: 2;
-            display: flex;
-            flex-direction: row;
-            padding-left: 5px;
-            overflow: hidden;
-        }
-
-        .room-list-frame,
-        .member-list-frame {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            padding: 0px 5px;
-        }
-
-        #room-list-box,
-        #member-list-box {
-            flex: 1;
-            word-wrap: break-word;
-            overflow-x: hidden;
-            overflow-y: scroll;
-            background: #e0e0e0;
-            padding: 5px;
-            margin: 5px 0px;
-        }
-
-        .option-screen button {
-            height: 40px;
-        }
-
-        .option-screen .head-tag {
-            background: #aaa;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .option-screen .item {
-            border-radius: 8px;
-            margin-bottom: 2px;
-            padding: 5px;
-            line-height: 20px;
-            background: cadetblue;
-        }
-
-        .member-list-frame .item {
-            display: flex;
-            background: #bbb;
-        }
-
-        .option-screen .item .item-name {
-            font-weight: bolder;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .room-list-frame .room-id::before {
-            content: "#";
-        }
-
-        .option-screen .item .room-id {
-            font-size: 12px;
-        }
-
-        .option-screen .item img {
-            width: 20px;
-            height: 20px;
-            margin: 0px 0px;
-        }
-
-        .room-list-frame img,
-        .room-list-frame span {
-            float: right;
-        }
-
-        .option-screen .item .user-id {
-            flex: 1;
-            word-wrap: break-word;
-            overflow: hidden;
-            word-wrap: break-word
-        }
-
-        .is-dark-mode .option-screen .item {
-            background: teal;
-        }
-
-        .is-dark-mode .member-list-frame .item {
-            background: #555;
-        }
-
-        .is-dark-mode .option-screen .head-tag {
-            background: #3a3a3a;
-        }
-
-        .is-dark-mode #room-list-box,
-        .is-dark-mode #member-list-box {
-            background: #292929;
-        }
-
-        /*<POPUP>*/
-
-        #modal-main-popup {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1;
-            width: 100vw;
-            height: 100vh;
-        }
-
-        .content-main-popup {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: cadetblue;
-            padding: 20px 20px;
-            border-radius: 8px;
-        }
-
-        .content-main-popup .title {
-            text-align: center;
-            font-weight: bolder;
-            margin-bottom: 5px;
-        }
-
-        .content-main-popup input {
-            width: 100%;
-            display: block;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: none;
-        }
-
-        .content-main-popup button {
-            display: block;
-            margin-top: 10px;
-            margin-left: 50%;
-            text-align: center;
-            transform: translate(-50%, 0);
-        }
-
-        #modal-main-popup .wrong-txt {
-            margin-left: 50%;
-            max-width: 50%;
-            word-wrap: break-word;
-            transform: translate(-50%, 0);
-            display: inline-block;
-            text-align: center;
-            border-radius: 5px;
-            margin-top: 5px;
-            background: black;
-            color: red;
-        }
-
-        .is-dark-mode #modal-main-popup {
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        .is-dark-mode .content-main-popup {
-            background: darkslategrey;
-        }
-
-        .is-dark-mode .content-main-popup input {
-            background: #111;
-            color: white;
-        }
-
-        /*</POPUP>*/
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-content {
-            box-sizing: border-box;
-            display: none;
-            position: absolute;
-            background-color: whitesmoke;
-            width: 100%;
-            box-shadow: 0px 3px 5px 0px;
-            padding: 5px 5px;
-            z-index: 1;
-            top: 80%;
-            left: 0px;
-            transform: translate(0, 0);
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-content:hover {
-            border-top: 2px solid;
-        }
-
-        .is-dark-mode .dropdown-content {
-            background: #333;
-        }
-
-        @media only screen and (max-width: 767px) {
-            .head-bar .title {
-                font-size: 18px;
-            }
-            .head-bar #name-txt {
-                font-size: 14px;
-            }
-            button {
-                font-size: 10px;
-            }
-            .option-screen {
-                display: none;
-            }
-        }
-    </style>
 </head>
 
 <body>
     <div class="main-screen">
         <div class="head-screen">
             <div class="head-bar">
-                <span class="title">
-                    ห้องหลัก
-                </span>
                 <span id="name-txt">
                     ชื่อ
                 </span>
                 <button id="toggle-theme-btn">สลับธีม</button>
+            </div>
+            <div class="title">
+                ห้องหลัก
             </div>
         </div>
         <div class="content-screen">
@@ -346,13 +72,14 @@
                 sessionStorage.setItem("id", data.id)
                 tokenSuccess();
             }
+            SOCKET.emit('check room', { token: TOKEN });
         });
 
         var ID, TOKEN;
         function tokenSuccess() {
             ID = sessionStorage.getItem("id");
             TOKEN = sessionStorage.getItem("token");
-            document.title += " " + ID;
+            document.title = ID + " " + document.title;
             $('#name-txt').html(ID);
         }
 
@@ -395,35 +122,8 @@
             SOCKET.emit("join room", { token: TOKEN, roomId: roomId, password: password });
         }
 
-        function popupCreateRoom(roomId) {
-            if (typeof roomId === "undefined") roomId = "";
-            let content = $('#modal-main-popup').find(".content-main-popup");
-            content.html(
-                "<div class='title'>สร้างห้อง</div>" +
-                "ชื่อห้อง <input type='text' id='room-name-input' placeholder='ชื่อห้อง'>" +
-                "รหัสผ่าน <input type='text' id='room-password-input' placeholder='รหัสผ่าน'>" +
-                "<button onclick='createRoom()'>ตกลง</button>" +
-                "<div class='wrong-txt'></div>"
-            );
-            $('#modal-main-popup').show();
-        }
-
-        function popupJoinRoom(roomId) {
-            if (typeof roomId === "undefined") roomId = "";
-            let content = $('#modal-main-popup').find(".content-main-popup");
-            content.html(
-                "<div class='title'>เข้าร่วมห้อง</div>" +
-                "ไอดีห้อง <input type='text' id='join-room-id-input' value='" + roomId + "' placeholder='ไอดีห้อง'>" +
-                "รหัสผ่าน <input type='text' id='join-room-password-input' placeholder='รหัสผ่าน'>" +
-                "<button onclick='joinRoomLock()'>ตกลง</button>" +
-                "<div class='wrong-txt'></div>"
-            );
-            $('#modal-main-popup').show();
-        }
-
-        function hideMainPopup() {
-            $('#modal-main-popup').hide();
-            $('#modal-main-popup').find(".content-main-popup").html("");
+        function testChatInRoom(msg) {
+            SOCKET.emit('send in room', { token: TOKEN, roomId: 0, msg: msg });
         }
 
         // SOCKET RECEIV************************
@@ -449,6 +149,8 @@
             let roomId = data.roomId;
             if (roomId != -1) {
                 hideMainPopup();
+                sessionStorage.setItem("room", roomId);
+                window.location.replace("./chatroom");
             } else {
                 $('#modal-main-popup').find('.wrong-txt').html('ผิดพลาด');
             }
@@ -462,7 +164,7 @@
                     '<div class="item dropdown">' +
                     '<span>' + roomList[i].members.length + '</span>' +
                     '<img src="./images/man-ico.png">' +
-                    ((roomList[i].lock) ? '<img id="num-of-mem" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">' : "") +
+                    ((roomList[i].lock) ? '<img id="num-of-mem" src="./images/lock-ico.png">' : "") +
                     '<div class="item-name">' +
                     roomList[i].name +
                     '</div>' +
@@ -476,8 +178,16 @@
             let roomId = data.roomId;
             if (roomId >= 0) {
                 hideMainPopup();
+                sessionStorage.setItem("room", roomId);
+                window.location.replace("./chatroom");
             } else {
                 $('#modal-main-popup').find('.wrong-txt').html('ผิดพลาด');
+            }
+        });
+        SOCKET.on('check room', (data) => {
+            if (data.roomId !== -1) {
+                sessionStorage.setItem("room", data.roomId);
+                window.location.replace("./chatroom");
             }
         });
     </script>

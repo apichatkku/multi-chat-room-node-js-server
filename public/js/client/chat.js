@@ -21,3 +21,38 @@ function chatBoxAddMsg(tagId, id, msg) {
     var objDiv = document.getElementById(tagId);
     objDiv.scrollTop = objDiv.scrollHeight;
 }
+
+// POPUP = {
+
+function popupCreateRoom(roomId) {
+    if (typeof roomId === "undefined") roomId = "";
+    let content = $('#modal-main-popup').find(".content-main-popup");
+    content.html(
+        "<div class='title'>สร้างห้อง</div>" +
+        "ชื่อห้อง <input type='text' id='room-name-input' placeholder='ชื่อห้อง'>" +
+        "รหัสผ่าน <input type='text' id='room-password-input' placeholder='รหัสผ่าน'>" +
+        "<button onclick='createRoom()'>ตกลง</button>" +
+        "<div class='wrong-txt'></div>"
+    );
+    $('#modal-main-popup').show();
+}
+
+function popupJoinRoom(roomId) {
+    if (typeof roomId === "undefined") roomId = "";
+    let content = $('#modal-main-popup').find(".content-main-popup");
+    content.html(
+        "<div class='title'>เข้าร่วมห้อง</div>" +
+        "ไอดีห้อง <input type='text' id='join-room-id-input' value='" + roomId + "' placeholder='ไอดีห้อง'>" +
+        "รหัสผ่าน <input type='text' id='join-room-password-input' placeholder='รหัสผ่าน'>" +
+        "<button onclick='joinRoomLock()'>ตกลง</button>" +
+        "<div class='wrong-txt'></div>"
+    );
+    $('#modal-main-popup').show();
+}
+
+function hideMainPopup() {
+    $('#modal-main-popup').hide();
+    $('#modal-main-popup').find(".content-main-popup").html("");
+}
+
+// } ENDPOPUP();

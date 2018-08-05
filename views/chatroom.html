@@ -10,65 +10,8 @@
     <script src="/js/client/theme.js"></script>
     <script src="/js/client/chat.js"></script>
     <style>
-        .main-screen {
-            width: 100%;
-            height: 100%;
-
-            display: flex;
-            flex-direction: column;
-        }
-
-        .head-screen {
-            padding: 5px;
-        }
-
-        .content-screen {
-            box-sizing: border-box;
-            flex: 1;
-            display: flex;
-            flex-direction: row;
-        }
-
-        #showmsg-txt {
-            font-size: 36px;
-            text-align: center;
-        }
-
-        #name-txt {
-            font-size: 26px;
-            text-decoration: underline
-        }
-
-        .head-bar {
-            position: relative;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            height: 80px;
-        }
-
-        .head-bar span {
-            float: left;
-            border: 0px solid #bbb;
-            display: block;
-            text-align: center;
-            line-height: 80px;
-            padding: 0 10px;
-        }
-
-        .head-bar .title {
-            float: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 36px;
-            font-weight: bolder;
-        }
-
-        .head-bar button {
-            float: right;
-            text-align: center;
+        #exit-room-btn:hover {
+            background: red;
         }
     </style>
 </head>
@@ -77,25 +20,42 @@
     <div class="main-screen">
         <div class="head-screen">
             <div class="head-bar">
-                <span class="title">
-                    Chat Room
-                </span>
                 <span id="name-txt">
-                    Name
+                    ชื่อ
                 </span>
-                <button id="toggle-theme-btn">Switch Theme</button>
+                <button id="toggle-theme-btn">สลับธีม</button>
+                <button onclick="exitRoom()">ออกห้อง</button>
+            </div>
+            <div class="title">
+                ห้องแชท
             </div>
         </div>
-        <div style="flex: 1; position: relative;">
-            <div class="chat-box">
-                <div id="chat-screen" class="chat-screen"></div>
-                <div class="chat-footer">
-                    <input id="msg-input">
-                    <button id="send-btn">ส่ง</button>
+        <div class="content-screen">
+            <div style="flex:3;position: relative;">
+                <div class="chat-box">
+                    <div id="chat-screen" class="chat-screen"></div>
+                    <div class="chat-footer">
+                        <input id="msg-input" placeholder="ข้อความ">
+                        <button id="send-btn">ส่ง</button>
+                    </div>
+                </div>
+            </div>
+            <div class="option-screen" style="flex: 1">
+                <div class="member-list-frame">
+                    <div class="head-tag">ผู้ใช้งาน</div>
+                    <div id="member-list-box">
+                    </div>
+                    <button id="join-room-btn">เข้าร่วมห้อง</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="modal-main-popup" hidden>
+        <div class="content-main-popup"></div>
+    </div>
+
+
 
     <script>
         var SOCKET = io();
@@ -107,18 +67,19 @@
         SOCKET.on('token', (data) => {
             console.log(data);
             if (data.status !== "success") {
-                window.location.href = "./";
+                window.location.replace("./");
             } else {
                 sessionStorage.setItem("id", data.id)
                 tokenSuccess();
             }
+            SOCKET.emit('check room', { token: TOKEN });
         });
 
-        var ID, TOKEN;
+        var ID, TOKEN, ROOM;
         function tokenSuccess() {
             ID = sessionStorage.getItem("id");
             TOKEN = sessionStorage.getItem("token");
-            document.title += " " + ID;
+            document.title = ID + " " + document.title;
             $('#name-txt').html(ID);
         }
 
@@ -126,13 +87,61 @@
             $('#send-btn').on('click', function () {
                 var msg = $('#msg-input').val();
                 $('#msg-input').val("");
-                SOCKET.emit('send', { token: TOKEN, msg: msg });
+                SOCKET.emit('send in room', { token: TOKEN, roomId: ROOM, msg: msg });
             });
         });
-        SOCKET.on('send-res', (data) => {
-            var id = data.id;
+
+        function exitRoom() {
+            SOCKET.emit('exit room', { token: TOKEN });
+        }
+
+        // SOCKET RECEIV************************
+        SOCKET.on('room list', (data) => {
+            try {
+                let roomList = data.rooms;
+                console.log(data);
+                let index = roomList.findIndex(x => x.id == ROOM);
+                if (index < 0) return;
+                let room = roomList[index];
+                $("#member-list-box").html("");
+                for (let i = 0; i < room.members.length; i++) {
+                    $("#member-list-box").append(
+                        "<div class='item dropdown' id='mem" + i + "'>" +
+                        "<img src='./images/" + ((room.members[i].type == "host") ? "host" : "man") + "-ico.png'>" +
+                        "<div class='user-id'>" + room.members[i].id + "</div>" +
+                        "<div class='dropdown-content'>" + "กระซิบ " + room.members[i].id + "</div>" +
+                        "</div>"
+                    );
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        });
+        SOCKET.on('join room', (data) => {
+            let roomId = data.roomId;
+            if (roomId >= 0) {
+                hideMainPopup();
+            } else {
+                $('#modal-main-popup').find('.wrong-txt').html('ผิดพลาด');
+            }
+        });
+        SOCKET.on('send in room', (data) => {
+            var id = data.userId;
             var msg = data.msg;
             chatBoxAddMsg("chat-screen", id, msg);
+        });
+        SOCKET.on('check room', (data) => {
+            ROOM = data.roomId
+            if (data.roomId !== -1) {
+                sessionStorage.setItem("room", ROOM);
+            } else {
+                sessionStorage.removeItem("room");
+                window.location.href = "./main";
+            }
+        });
+        SOCKET.on('exit room', (data) => {
+            sessionStorage.removeItem("room");
+            window.location.href = "./main";
         });
     </script>
 </body>
