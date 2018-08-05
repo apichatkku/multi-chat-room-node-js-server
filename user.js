@@ -96,6 +96,7 @@ exports.removeToken = function (token) {
 
 exports.disSocket = function (socket) {
     for (let i = 0; i < userDatas.length; i++) {
+        //check userdatas[i] have this socket id
         let index = userDatas[i].sockets.indexOf(socket);
         if (index >= 0) {
             let id = userDatas[i].id;

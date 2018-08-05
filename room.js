@@ -84,7 +84,7 @@ exports.getRoomList = function () {
         let room = {
             id: roomDatas[i].id,
             name: roomDatas[i].name,
-            password: roomDatas[i].password,
+            lock: (roomDatas[i].password !== "") ? true : false,
             members: roomDatas[i].members
         };
         roomList.push(room);
@@ -92,13 +92,37 @@ exports.getRoomList = function () {
     return roomList;
 }
 
+exports.memberJoin = function (roomId, userId, password) {
+    let index = roomDatas.findIndex(x => x.id === roomId);
+    //check roomDatas don't have this room id
+    console.log("------------"+index);
+    if (index < 0) {
+        return -1;
+    }
+    //check user id don't have in room of this id
+    if (roomDatas[index].members.findIndex(x => x.id === userId) === -1) {
+        console.log("555555555555-"+password);
+        if (typeof password !== "string") {
+            password = "";
+        }
+        console.log("666666666666-"+password);
+        if (roomDatas[index].password === password) {
+            memberOut(userId);
+            roomDatas[index].join(userId);
+            console.log("7777777777777-"+password);
+        }else{
+            console.log("0000000000000-"+password);
+            return -1;
+        }
+    }
+    console.log("8888888888888-"+password);
+    return roomDatas[index].id;
+}
+
 var memberOut = function (userId) {
-    console.log("888888"+userId);
     for (let i = 0; i < roomDatas.length; i++) {
-        console.log("9999999"+i);
         let memberNum = roomDatas[i].out(userId);
         if (memberNum <= 0) {
-            console.log("222222222."+memberNum);
             roomDatas.splice(i, 1);
             i--;
         }

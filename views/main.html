@@ -98,7 +98,7 @@
         }
 
         .option-screen .head-tag {
-            background: #c0c0c0;
+            background: #aaa;
             padding: 10px;
             text-align: center;
         }
@@ -111,8 +111,9 @@
             background: cadetblue;
         }
 
-        .option-screen .member-list-frame .item {
+        .member-list-frame .item {
             display: flex;
+            background: #bbb;
         }
 
         .option-screen .item .item-name {
@@ -152,6 +153,10 @@
             background: teal;
         }
 
+        .is-dark-mode .member-list-frame .item {
+            background: #555;
+        }
+
         .is-dark-mode .option-screen .head-tag {
             background: #3a3a3a;
         }
@@ -161,7 +166,9 @@
             background: #292929;
         }
 
-        #modal-create-room {
+        /*<POPUP>*/
+
+        #modal-main-popup {
             position: absolute;
             top: 0;
             left: 0;
@@ -171,7 +178,7 @@
             height: 100vh;
         }
 
-        .content-create-room {
+        .content-main-popup {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -181,14 +188,21 @@
             border-radius: 8px;
         }
 
-        .content-create-room input {
+        .content-main-popup .title {
+            text-align: center;
+            font-weight: bolder;
+            margin-bottom: 5px;
+        }
+
+        .content-main-popup input {
+            width: 100%;
             display: block;
             padding: 10px;
             margin-bottom: 10px;
             border: none;
         }
 
-        .content-create-room button {
+        .content-main-popup button {
             display: block;
             margin-top: 10px;
             margin-left: 50%;
@@ -196,29 +210,73 @@
             transform: translate(-50%, 0);
         }
 
-        .is-dark-mode #modal-create-room {
+        #modal-main-popup .wrong-txt {
+            margin-left: 50%;
+            max-width: 50%;
+            word-wrap: break-word;
+            transform: translate(-50%, 0);
+            display: inline-block;
+            text-align: center;
+            border-radius: 5px;
+            margin-top: 5px;
+            background: black;
+            color: red;
+        }
+
+        .is-dark-mode #modal-main-popup {
             background: rgba(255, 255, 255, 0.5);
         }
 
-        .is-dark-mode .content-create-room {
+        .is-dark-mode .content-main-popup {
             background: darkslategrey;
         }
 
-        .is-dark-mode .content-create-room input {
+        .is-dark-mode .content-main-popup input {
             background: #111;
             color: white;
+        }
+
+        /*</POPUP>*/
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            box-sizing: border-box;
+            display: none;
+            position: absolute;
+            background-color: whitesmoke;
+            width: 100%;
+            box-shadow: 0px 3px 5px 0px;
+            padding: 5px 5px;
+            z-index: 1;
+            top: 80%;
+            left: 0px;
+            transform: translate(0, 0);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content:hover {
+            border-top: 2px solid;
+        }
+
+        .is-dark-mode .dropdown-content {
+            background: #333;
         }
 
         @media only screen and (max-width: 767px) {
             .head-bar .title {
                 font-size: 18px;
-                ;
             }
             .head-bar #name-txt {
-                font-size: 10px;
+                font-size: 14px;
             }
             button {
-                font-size: 14px;
+                font-size: 10px;
             }
             .option-screen {
                 display: none;
@@ -232,12 +290,12 @@
         <div class="head-screen">
             <div class="head-bar">
                 <span class="title">
-                    Main Room
+                    ห้องหลัก
                 </span>
                 <span id="name-txt">
-                    Name
+                    ชื่อ
                 </span>
-                <button id="toggle-theme-btn">Switch Theme</button>
+                <button id="toggle-theme-btn">สลับธีม</button>
             </div>
         </div>
         <div class="content-screen">
@@ -254,15 +312,6 @@
                 <div class="room-list-frame">
                     <div class="head-tag">ห้อง</div>
                     <div id="room-list-box">
-                        <div class="item">
-                            <span>6</span>
-                            <img src="./images/man-ico.png">
-                            <img id="num-of-mem" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">
-                            <div class="item-name">
-                                รอออออออออออแฟนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนนน
-                            </div>
-                            <div class="room-id">7</div>
-                        </div>
                     </div>
                     <button id="create-room-btn">สร้างห้อง</button>
                 </div>
@@ -270,20 +319,17 @@
                     <div class="head-tag">ผู้ใช้งาน</div>
                     <div id="member-list-box">
                     </div>
-                    <button>เข้าร่วมห้อง</button>
+                    <button id="join-room-btn">เข้าร่วมห้อง</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="modal-create-room" hidden>
-        <div class="content-create-room">
-            ชื่อห้อง
-            <input type="text" id="room-name-input" placeholder="ชื่อห้อง"> รหัสผ่าน
-            <input type="text" id="room-password-input" placeholder="รหัสผ่าน">
-            <button id="create-room-submit">ตกลง</button>
-        </div>
+    <div id="modal-main-popup" hidden>
+        <div class="content-main-popup"></div>
     </div>
+
+
 
     <script>
         var SOCKET = io();
@@ -317,19 +363,68 @@
                 SOCKET.emit('send', { token: TOKEN, msg: msg });
             });
             $('#create-room-btn').on('click', function () {
-                $('#modal-create-room').show();
+                popupCreateRoom();
             });
-            $('#modal-create-room').on('click', function (event) {
-                if (event.target.id === "modal-create-room") {
-                    $('#modal-create-room').hide();
+            $('#join-room-btn').on('click', function () {
+                popupJoinRoom();
+            });
+            $('#modal-main-popup').on('click', function () {
+                if (event.target.id === "modal-main-popup") {
+                    hideMainPopup();
                 }
             });
-            $('#create-room-submit').on('click', function () {
-                let roomName = $('#room-name-input').val();
-                let passwod = $('#room-name-password').val();
-                SOCKET.emit('create room', { token: TOKEN, roomName: roomName, passwod: passwod });
-            });
         });
+
+        function createRoom() {
+            let roomName = $('#room-name-input').val();
+            let password = $('#room-password-input').val();
+            SOCKET.emit('create room', { token: TOKEN, roomName: roomName, password: password });
+        }
+
+        function joinRoom(roomId, lock) {
+            if (lock) {
+                popupJoinRoom(roomId);
+            } else {
+                SOCKET.emit("join room", { token: TOKEN, roomId: roomId });
+            }
+        }
+
+        function joinRoomLock() {
+            let roomId = $("#join-room-id-input").val();
+            let password = $("#join-room-password-input").val();
+            SOCKET.emit("join room", { token: TOKEN, roomId: roomId, password: password });
+        }
+
+        function popupCreateRoom(roomId) {
+            if (typeof roomId === "undefined") roomId = "";
+            let content = $('#modal-main-popup').find(".content-main-popup");
+            content.html(
+                "<div class='title'>สร้างห้อง</div>" +
+                "ชื่อห้อง <input type='text' id='room-name-input' placeholder='ชื่อห้อง'>" +
+                "รหัสผ่าน <input type='text' id='room-password-input' placeholder='รหัสผ่าน'>" +
+                "<button onclick='createRoom()'>ตกลง</button>" +
+                "<div class='wrong-txt'></div>"
+            );
+            $('#modal-main-popup').show();
+        }
+
+        function popupJoinRoom(roomId) {
+            if (typeof roomId === "undefined") roomId = "";
+            let content = $('#modal-main-popup').find(".content-main-popup");
+            content.html(
+                "<div class='title'>เข้าร่วมห้อง</div>" +
+                "ไอดีห้อง <input type='text' id='join-room-id-input' value='" + roomId + "' placeholder='ไอดีห้อง'>" +
+                "รหัสผ่าน <input type='text' id='join-room-password-input' placeholder='รหัสผ่าน'>" +
+                "<button onclick='joinRoomLock()'>ตกลง</button>" +
+                "<div class='wrong-txt'></div>"
+            );
+            $('#modal-main-popup').show();
+        }
+
+        function hideMainPopup() {
+            $('#modal-main-popup').hide();
+            $('#modal-main-popup').find(".content-main-popup").html("");
+        }
 
         // SOCKET RECEIV************************
         SOCKET.on('send-res', (data) => {
@@ -342,39 +437,47 @@
             $("#member-list-box").html("");
             for (let i = 0; i < userList.length; i++) {
                 $("#member-list-box").append(
-                    "<di class='item'>" +
+                    "<div class='item dropdown' id='mem" + i + "'>" +
                     "<img src='./images/man-ico.png'>" +
                     "<div class='user-id'>" + userList[i] + "</div>" +
+                    "<div class='dropdown-content'>" + "กระซิบ " + userList[i] + "</div>" +
                     "</div>"
                 );
-                console.log(555);
-                console.log($("#member-list-box").text());
             }
-            console.log(data.users);
         });
         SOCKET.on('create room', (data) => {
             let roomId = data.roomId;
             if (roomId != -1) {
-                alert("สร้างห้องสำเร็จ");
+                hideMainPopup();
             } else {
-                alert("สร้างห้องไม่สำเร็จ");
+                $('#modal-main-popup').find('.wrong-txt').html('ผิดพลาด');
             }
         });
         SOCKET.on('room list', (data) => {
             let roomList = data.rooms;
+            console.log(data);
             $("#room-list-box").html("");
             for (let i = 0; i < roomList.length; i++) {
                 $("#room-list-box").append(
-                    '<div class="item">' +
+                    '<div class="item dropdown">' +
                     '<span>' + roomList[i].members.length + '</span>' +
                     '<img src="./images/man-ico.png">' +
-                    '<img id="num-of-mem" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">' +
+                    ((roomList[i].lock) ? '<img id="num-of-mem" src="http://www.pngmart.com/files/1/Key-PNG-Clipart.png">' : "") +
                     '<div class="item-name">' +
                     roomList[i].name +
                     '</div>' +
                     '<div class="room-id">' + roomList[i].id + '</div>' +
+                    "<div onclick='joinRoom(" + roomList[i].id + "," + roomList[i].lock + ")' class='dropdown-content'>" + "เข้าร่วมห้อง " + roomList[i].name + "</div>" +
                     '</div>'
                 );
+            }
+        });
+        SOCKET.on('join room', (data) => {
+            let roomId = data.roomId;
+            if (roomId >= 0) {
+                hideMainPopup();
+            } else {
+                $('#modal-main-popup').find('.wrong-txt').html('ผิดพลาด');
             }
         });
     </script>

@@ -141,6 +141,22 @@ io.on('connection', function (socket) {
             socket.emit("create room", { roomId: -1 });
         }
     });
+    socket.on('join room', (data) => {
+        try {
+            let token = data.token;
+            let user = USER.checkToken(token, socket.id);
+            let roomId = Number(data.roomId);
+            let password = (typeof data.password !== "string") ? "" : data.password;
+            console.log("-------------------------------\n" + (typeof roomId), (typeof password));
+            let newRoomId = ROOM.memberJoin(roomId, user.id, password);
+            socket.emit('join room', { roomId: newRoomId });
+        } catch (error) {
+            console.log(error);
+            socket.emit('join room', { roomId: -1 });
+        } finally {
+            announceRoomList();
+        }
+    });
 
     socket.on('logout', (data) => {
         try {
