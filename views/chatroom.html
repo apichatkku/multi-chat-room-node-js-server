@@ -137,9 +137,16 @@
             var msg = data.msg;
             chatBoxAddMsg("chat-screen", id, msg);
         });
+        SOCKET.on('send whisper', (data) => {
+            var id = data.id;
+            var msg = data.msg;
+            chatBoxAddMsg("chat-screen", id, msg, "whisper");
+        });
         SOCKET.on('check room', (data) => {
-            ROOM = data.roomId
+            ROOM = data.roomId;
             if (data.roomId !== -1) {
+                console.log($(".head-screen > .title"));
+                $(".head-screen > .title").text("ห้องแชท " + data.roomName + " #" + ROOM);
                 sessionStorage.setItem("room", ROOM);
             } else {
                 sessionStorage.removeItem("room");

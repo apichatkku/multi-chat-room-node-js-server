@@ -159,13 +159,35 @@ io.on('connection', function (socket) {
     socket.on('check room', (data) => {
         try {
             let user = USER.checkToken(data.token, socket.id);
-            let roomId = ROOM.findByMember(user.id);
-            socket.emit('check room', { roomId: roomId });
+            if(user===null){
+                return;
+            }
+            let room = ROOM.findById(ROOM.findByMember(user.id));
+            console.log("------------------------------");
+            console.log(room);
+            if (room === null) {
+                return;
+            }
+            socket.emit('check room', { roomId: room.id, roomName: room.name });
             announceRoomList();
         } catch (error) {
             console.log(error);
         }
     })
+    socket.on('send whisper', (data) => {
+        try {
+            let user = USER.checkToken(data.token, socket.id);
+            let userRes = data.userRes;
+            let msg = data.msg;
+            if (user === null || typeof userRes === "undefined" || typeof msg === "undefined" || msg === "") {
+                console.log(data);
+                return;
+            }
+            emitToUser(userRes, "send whisper", { id: user.id, msg: msg });
+        } catch (error) {
+            console.log(error);
+        }
+    });
     socket.on('send in room', (data) => {
         try {
             let user = USER.checkToken(data.token, socket.id);
@@ -217,11 +239,9 @@ io.on('connection', function (socket) {
 
 function sendInRoom(roomId, title, data) {
     let room = ROOM.findById(roomId);
-    console.log("####################" + room.members.length);
     room.members.forEach((member) => {
         let sockets = USER.getSocketsById(member.id);
         sockets.forEach((socketId) => {
-            console.log(socketId);
             io.to(socketId).emit(title, data);
         });
     });
@@ -233,6 +253,13 @@ function announceRoomList() {
 
 function announceUserList() {
     io.emit("user list", { users: USER.getUserIdList() });
+}
+
+function emitToUser(userId, title, data) {
+    let sockets = USER.getSocketsById(userId);
+    sockets.forEach((socketId) => {
+        io.to(socketId).emit(title, data);
+    });
 }
 
 

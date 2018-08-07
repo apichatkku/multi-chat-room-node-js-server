@@ -97,7 +97,24 @@
             $('#send-btn').on('click', function () {
                 var msg = $('#msg-input').val();
                 $('#msg-input').val("");
-                SOCKET.emit('send', { token: TOKEN, msg: msg });
+                if (msg.startsWith("/กระซิบ ") || msg.startsWith("/whisper ") || msg.startsWith("/wh ") || msg.startsWith("/กซ ")) {
+                    try {
+                        let msgSplit = msg.split(" ");
+                        let userRes = msgSplit[1];
+                        msg = msgSplit[2];
+                        for (let i = 3; i < msgSplit.length; i++) {
+                            msg += " " + msgSplit[i];
+                        }
+                        SOCKET.emit('send whisper', { token: TOKEN, msg: msg, userRes: userRes });
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    if(msg.startsWith("\\")){
+                        msg = msg.substr(1);
+                    }
+                    SOCKET.emit('send', { token: TOKEN, msg: msg });
+                }
             });
             $('#create-room-btn').on('click', function () {
                 popupCreateRoom();
@@ -132,15 +149,16 @@
             SOCKET.emit("join room", { token: TOKEN, roomId: roomId, password: password });
         }
 
-        function testChatInRoom(msg) {
-            SOCKET.emit('send in room', { token: TOKEN, roomId: 0, msg: msg });
-        }
-
         // SOCKET RECEIV************************
         SOCKET.on('send-res', (data) => {
             var id = data.id;
             var msg = data.msg;
             chatBoxAddMsg("chat-screen", id, msg);
+        });
+        SOCKET.on('send whisper', (data) => {
+            var id = data.id;
+            var msg = data.msg;
+            chatBoxAddMsg("chat-screen", id, msg, "whisper");
         });
         SOCKET.on('user list', (data) => {
             let userList = data.users;

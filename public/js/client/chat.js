@@ -12,17 +12,33 @@ $(function () {
 
     $('.head-bar').on('click', '.mobile-drop-menu', (event) => {
         $(".head-bar>span.active").removeClass("active");
-        console.log($(event.currentTarget).addClass('active'));
+        $(event.currentTarget).addClass('active');
+    });
+
+    $('#member-list-box').on('click', '.item', (event) => {
+        let userRes = $(event.currentTarget).find('.user-id').text();
+        $('#msg-input').val("/whisper " + userRes + " ");
     });
 });
 
-function chatBoxAddMsg(tagId, id, msg) {
-    $('#' + tagId).append(
-        '<div class="msg-box">' +
-        '<div class="name">' + id + '</div>' +
-        '<div class="msg-frame"><span class="msg">' + msg + '</span></div>' +
-        '</div>'
-    );
+function chatBoxAddMsg(tagId, id, msg, option) {
+    if (typeof option !== "undefined") {
+        if (option == "whisper") {
+            $('#' + tagId).append(
+                '<div class="msg-box">' +
+                '<div class="name">' + "กระซิบจาก > " + id + '</div>' +
+                '<div class="msg-frame"><span class="msg">' + msg + '</span></div>' +
+                '</div>'
+            );
+        }
+    } else {
+        $('#' + tagId).append(
+            '<div class="msg-box">' +
+            '<div class="name">' + id + '</div>' +
+            '<div class="msg-frame"><span class="msg">' + msg + '</span></div>' +
+            '</div>'
+        );
+    }
     var objDiv = document.getElementById(tagId);
     objDiv.scrollTop = objDiv.scrollHeight;
 }
