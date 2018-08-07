@@ -138,8 +138,15 @@
             chatBoxAddMsg("chat-screen", id, msg);
         });
         SOCKET.on('send whisper', (data) => {
-            var id = data.id;
-            var msg = data.msg;
+            let id = "";
+            if (data.status == "reci") {
+                id = "กระซิบจาก > " + data.id;
+            } else if (data.status == "send") {
+                id = "กระซิบ > " + data.id;
+            } else {
+                return;
+            }
+            let msg = data.msg;
             chatBoxAddMsg("chat-screen", id, msg, "whisper");
         });
         SOCKET.on('check room', (data) => {

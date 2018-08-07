@@ -110,7 +110,7 @@
                         console.log(error);
                     }
                 } else {
-                    if(msg.startsWith("\\")){
+                    if (msg.startsWith("\\")) {
                         msg = msg.substr(1);
                     }
                     SOCKET.emit('send', { token: TOKEN, msg: msg });
@@ -156,8 +156,15 @@
             chatBoxAddMsg("chat-screen", id, msg);
         });
         SOCKET.on('send whisper', (data) => {
-            var id = data.id;
-            var msg = data.msg;
+            let id = "";
+            if (data.status == "reci") {
+                id = data.id + " กระซิบคุณ";
+            } else if (data.status == "send") {
+                id = "คุณกระซิบ " + data.id;
+            } else {
+                return;
+            }
+            let msg = data.msg;
             chatBoxAddMsg("chat-screen", id, msg, "whisper");
         });
         SOCKET.on('user list', (data) => {

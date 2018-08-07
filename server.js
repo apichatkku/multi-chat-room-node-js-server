@@ -159,7 +159,7 @@ io.on('connection', function (socket) {
     socket.on('check room', (data) => {
         try {
             let user = USER.checkToken(data.token, socket.id);
-            if(user===null){
+            if (user === null) {
                 return;
             }
             let room = ROOM.findById(ROOM.findByMember(user.id));
@@ -183,7 +183,8 @@ io.on('connection', function (socket) {
                 console.log(data);
                 return;
             }
-            emitToUser(userRes, "send whisper", { id: user.id, msg: msg });
+            emitToUser(user.id, "send whisper", { id: userRes, msg: msg, status: "send" });
+            emitToUser(userRes, "send whisper", { id: user.id, msg: msg, status: "reci" });
         } catch (error) {
             console.log(error);
         }

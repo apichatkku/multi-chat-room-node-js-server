@@ -26,8 +26,8 @@ function chatBoxAddMsg(tagId, id, msg, option) {
         if (option == "whisper") {
             $('#' + tagId).append(
                 '<div class="msg-box">' +
-                '<div class="name">' + "กระซิบจาก > " + id + '</div>' +
-                '<div class="msg-frame"><span class="msg">' + msg + '</span></div>' +
+                '<div class="name"><u>' + id + '</u></div>' +
+                '<div class="msg-frame whisper"><span class="msg">' + msg + '</span></div>' +
                 '</div>'
             );
         }
@@ -35,7 +35,7 @@ function chatBoxAddMsg(tagId, id, msg, option) {
         $('#' + tagId).append(
             '<div class="msg-box">' +
             '<div class="name">' + id + '</div>' +
-            '<div class="msg-frame"><span class="msg">' + msg + '</span></div>' +
+            '<div class="msg-frame ' + ((id == ID) ? 'my-msg' : '') + '"><span class="msg">' + msg + '</span></div>' +
             '</div>'
         );
     }
