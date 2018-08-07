@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="css/chat.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="/jquery/jquery.min.js"></script>
+    <script src="/js/client/main.js"></script>
     <script src="/js/client/theme.js"></script>
     <script src="/js/client/chat.js"></script>
     <style>
@@ -18,20 +19,28 @@
 
 <body>
     <div class="main-screen">
-        <div class="head-screen">
-            <div class="head-bar">
-                <span id="name-txt">
-                    ชื่อ
-                </span>
-                <button id="toggle-theme-btn">สลับธีม</button>
-                <button onclick="exitRoom()">ออกห้อง</button>
+        <div class="head-bar">
+            <span id="name-txt">
+                ชื่อ
+            </span>
+            <span class="mobile-drop-menu active" onclick="openFrame('chat-frame')">แชท</span>
+            <span class="mobile-drop-menu" onclick="openFrame('member-list-frame')">ผู้ใช้งาน</span>
+            <div class="dropdown right-item">
+                <button class="dropbtn" onclick="toggleDropMenu('main-drop-menu')" style="font-size: 16px">&equiv;
+                </button>
+                <div id="main-drop-menu" class="dropdown-content" style="font-weight: normal;">
+                    <span id="toggle-theme-btn">สลับธีม</span>
+                    <span onclick="exitRoom()" id="exit-room-btn">ออกห้อง</span>
+                </div>
             </div>
+        </div>
+        <div class="head-screen">
             <div class="title">
                 ห้องแชท
             </div>
         </div>
         <div class="content-screen">
-            <div style="flex:3;position: relative;">
+            <div class="chat-frame" style="flex:3;position: relative;">
                 <div class="chat-box">
                     <div id="chat-screen" class="chat-screen"></div>
                     <div class="chat-footer">
@@ -45,7 +54,6 @@
                     <div class="head-tag">ผู้ใช้งาน</div>
                     <div id="member-list-box">
                     </div>
-                    <button id="join-room-btn">เข้าร่วมห้อง</button>
                 </div>
             </div>
         </div>
@@ -109,7 +117,6 @@
                         "<div class='item dropdown' id='mem" + i + "'>" +
                         "<img src='./images/" + ((room.members[i].type == "host") ? "host" : "man") + "-ico.png'>" +
                         "<div class='user-id'>" + room.members[i].id + "</div>" +
-                        "<div class='dropdown-content'>" + "กระซิบ " + room.members[i].id + "</div>" +
                         "</div>"
                     );
                 }

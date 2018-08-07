@@ -101,7 +101,7 @@ exports.disSocket = function (socket) {
         if (index >= 0) {
             let id = userDatas[i].id;
             userDatas[i].sockets.splice(index, 1);
-            if (userDatas[i].sockets.length <= 0) {
+            if (userDatas[i].sockets.length <= 0 && ROOM.findByMember(id) != -1) {
                 setTimeout(() => {
                     clearUserActivity(id);
                 }, 2000);

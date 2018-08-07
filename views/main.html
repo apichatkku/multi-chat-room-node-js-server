@@ -7,25 +7,35 @@
     <link rel="stylesheet" type="text/css" href="./css/chat.css">
     <script src="./socket.io/socket.io.js"></script>
     <script src="./jquery/jquery.min.js"></script>
+    <script src="./js/client/main.js"></script>
     <script src="./js/client/theme.js"></script>
     <script src="./js/client/chat.js"></script>
 </head>
 
 <body>
     <div class="main-screen">
-        <div class="head-screen">
-            <div class="head-bar">
-                <span id="name-txt">
-                    ชื่อ
-                </span>
-                <button id="toggle-theme-btn">สลับธีม</button>
+        <div class="head-bar">
+            <span id="name-txt">
+                ชื่อ
+            </span>
+            <span class="mobile-drop-menu active" onclick="openFrame('chat-frame')">แชท</span>
+            <span class="mobile-drop-menu" onclick="openFrame('room-list-frame')">ห้องแชท</span>
+            <span class="mobile-drop-menu" onclick="openFrame('member-list-frame')">ผู้ใช้งาน</span>
+            <div class="dropdown right-item">
+                <button class="dropbtn" onclick="toggleDropMenu('main-drop-menu')" style="font-size: 20px;padding:0 20px; background: none;">&equiv;
+                </button>
+                <div id="main-drop-menu" class="dropdown-content" style="font-weight: normal;">
+                    <span id="toggle-theme-btn">สลับธีม</span>
+                </div>
             </div>
+        </div>
+        <div class="head-screen">
             <div class="title">
                 ห้องหลัก
             </div>
         </div>
         <div class="content-screen">
-            <div style="flex:2;position: relative;">
+            <div class="chat-frame" style="flex:2;position: relative;">
                 <div class="chat-box">
                     <div id="chat-screen" class="chat-screen"></div>
                     <div class="chat-footer">
@@ -140,7 +150,6 @@
                     "<div class='item dropdown' id='mem" + i + "'>" +
                     "<img src='./images/man-ico.png'>" +
                     "<div class='user-id'>" + userList[i] + "</div>" +
-                    "<div class='dropdown-content'>" + "กระซิบ " + userList[i] + "</div>" +
                     "</div>"
                 );
             }
@@ -161,7 +170,7 @@
             $("#room-list-box").html("");
             for (let i = 0; i < roomList.length; i++) {
                 $("#room-list-box").append(
-                    '<div class="item dropdown">' +
+                    '<div class="item dropdown" onclick="joinRoom(' + roomList[i].id + ',' + roomList[i].lock + ')">' +
                     '<span>' + roomList[i].members.length + '</span>' +
                     '<img src="./images/man-ico.png">' +
                     ((roomList[i].lock) ? '<img id="num-of-mem" src="./images/lock-ico.png">' : "") +
@@ -169,7 +178,6 @@
                     roomList[i].name +
                     '</div>' +
                     '<div class="room-id">' + roomList[i].id + '</div>' +
-                    "<div onclick='joinRoom(" + roomList[i].id + "," + roomList[i].lock + ")' class='dropdown-content'>" + "เข้าร่วมห้อง " + roomList[i].name + "</div>" +
                     '</div>'
                 );
             }

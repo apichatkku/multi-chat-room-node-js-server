@@ -17,7 +17,7 @@ body.is-dark-mode {
   color: #fff;
 }
 
-button {
+button, input[type="submit"] {
   background: steelblue;
   border-radius: 2px;
   font-weight: bolder;
@@ -26,13 +26,12 @@ button {
   padding: 8px;
 }
 
-button#toggle-theme-btn{
-  background: none;
+button:hover, input[type="submit"]:hover {
+  box-shadow: inset 0 0 10px 2px;
 }
 
-button:hover {
-  box-shadow: inset 0 0 20px;
-  text-shadow: 0px 0px 20px;
+.is-dark-mode input[type="submit"]:hover{
+  box-shadow: inset 0 0 10px 2px white;
 }
 
 .is-dark-mode button {
@@ -50,7 +49,7 @@ button:hover {
 .head-screen{
   height: 60px;
   position: relative;
-  box-shadow: inset 0px -10px 10px -10px;
+  /*box-shadow: inset 0px -10px 10px -10px;*/
 }
 
 .head-screen .title{
@@ -65,11 +64,10 @@ button:hover {
 }
 
 .head-bar {
-  overflow: hidden;
-  align-items: center;
+  overflow: visible;
 }
 
-.head-bar span {
+.head-bar > span {
   height: 30px;
   line-height: 30px;
   min-width: 30px;
@@ -77,8 +75,12 @@ button:hover {
   float: left;
   display: block;
   text-align: center;
-  padding: 0 20px;
+  padding: 0 10px;
   font-weight: bolder;
+}
+
+.head-bar > .active{
+  box-shadow: inset 0 0 10px 0;
 }
 
 .head-bar button{
@@ -87,8 +89,8 @@ button:hover {
   background: unset;
 }
 
-.head-bar span.left-item {
-  float: left
+.head-bar > .right-item {
+  float: right;
 }
 
 #name-txt {
@@ -97,9 +99,70 @@ button:hover {
 }
 
 .content-screen {
+  margin: 0px 20px;
+  margin-bottom: 10px;
+  box-shadow: 0px 0px 10px 0px;
   box-sizing: border-box;
   flex: 1;
   display: flex;
   flex-direction: row;
 }
+.content-screen{
+  padding-bottom: 2px;
+}
 /*</FRAM>*/
+
+/*<MENU>*/
+.dropbtn {
+  border: none;
+  cursor: pointer;
+}
+
+.dropbtn:hover,
+.dropbtn:focus {
+  background-color: #2980B9;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0px;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.dropdown-content span {
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content span:hover {
+  background-color: #ddd;
+}
+
+.dropdown .show {
+  display: block;
+}
+
+.is-dark-mode .dropdown-content span:hover{
+  background-color: #111;
+}
+
+.is-dark-mode .dropdown-content{
+  background: black;
+}
+
+span.mobile-drop-menu{
+  display: none;
+}
+/*</MENU>*/

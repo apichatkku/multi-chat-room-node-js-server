@@ -9,6 +9,11 @@ $(function () {
             $("#send-btn").click();
         }
     });
+
+    $('.head-bar').on('click', '.mobile-drop-menu', (event) => {
+        $(".head-bar>span.active").removeClass("active");
+        console.log($(event.currentTarget).addClass('active'));
+    });
 });
 
 function chatBoxAddMsg(tagId, id, msg) {
@@ -50,9 +55,17 @@ function popupJoinRoom(roomId) {
     $('#modal-main-popup').show();
 }
 
-function hideMainPopup() {
-    $('#modal-main-popup').hide();
-    $('#modal-main-popup').find(".content-main-popup").html("");
+function openFrame(classname, element) {
+    $(".chat-frame").hide();
+    $(".room-list-frame").hide();
+    $(".member-list-frame").hide();
+    $(".option-screen").hide();
+    if (classname == "chat-frame") {
+        $("." + classname).show();
+    } else {
+        $(".option-screen").css('display', 'flex');
+        $("." + classname).css('display', 'flex');
+    }
 }
 
 // } ENDPOPUP();
