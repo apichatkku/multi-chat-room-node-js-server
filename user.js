@@ -47,6 +47,7 @@ exports.findBySocket = function (socket) {
 }
 
 exports.newUser = function (id, socket) {
+    disSocket(socket);
     let user = new User(id, socket);
     userDatas.push(user);
     console.log(userDatas);
@@ -94,7 +95,7 @@ exports.removeToken = function (token) {
     }
 }
 
-exports.disSocket = function (socket) {
+var disSocket = function (socket) {
     for (let i = 0; i < userDatas.length; i++) {
         //check userdatas[i] have this socket id
         let index = userDatas[i].sockets.indexOf(socket);
@@ -109,6 +110,7 @@ exports.disSocket = function (socket) {
         }
     }
 }
+exports.disSocket = disSocket;
 
 exports.checkTimeout = function () {
     try {

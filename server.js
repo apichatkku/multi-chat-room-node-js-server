@@ -65,6 +65,7 @@ io.on('connection', function (socket) {
                 return;
             }
             let user = USER.newUser(id, socket.id);
+            console.log("------------------------------");
             console.log(user.id + "is logged in.");
             socket.emit("login", { id: user.id, token: user.token, status: true });
             announceUserList();
